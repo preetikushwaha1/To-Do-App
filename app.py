@@ -7,9 +7,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///todo.db"   #initialize sql_al
 db = SQLAlchemy(app) 
 
 
-with app.app_context():        #add this to create table in instance folder
-    db.create_all() 
-    
 
 
 class My_Todo(db.Model):
@@ -20,7 +17,10 @@ class My_Todo(db.Model):
     
     def __repr__(self) -> str:
         return f"{self.sno} - {self.title}"
-    
+
+with app.app_context():        #add this to create table in instance folder
+    db.create_all() 
+     
 
 @app.route("/")
 def hello_world():
