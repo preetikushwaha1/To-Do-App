@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -22,16 +22,27 @@ with app.app_context():        #add this to create table in instance folder
     db.create_all() 
      
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def hello_world():
-    todo = My_Todo(title ="First todo", desc = "this is my first todo")
-    db.session.add(todo)
-    db.session.commit()
-    return render_template('index.html')
+    if request.method == "POST":
+        title=request.form['title']
+        desc = request.form['desc']
+        print("titel=", title)
+        print("desc=", desc)
+        
+        todo = My_Todo(title =title, desc = desc)
+        db.session.add(todo)
+        db.session.commit()
+        allTodo = My_Todo.query.all()
+        print(allTodo)
+    return render_template('index.html', allTodo=allTodo)
 
-@app.route("/products")
+@app.route("/show")
 def products():
-    return "this is products page"
+    allTodo = My_Todo.query.all()
+    print(allTodo)
+    
+    return "this is productd page"
 
 if __name__ =="__main__":
     app.run(debug=True) 
